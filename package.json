@@ -8,8 +8,16 @@
     "build": "tsc"
   },
   "keywords": [],
-  "author": "",
+  "author": "Tiago Dias Laureano",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiago-dias-laureano/PixJS.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tiago-dias-laureano/PixJS/issues"
+  },
+  "homepage": "https://github.com/tiago-dias-laureano/PixJS#readme",
   "dependencies": {
     "@types/node": "^20.8.9",
     "typescript": "^5.2.2"

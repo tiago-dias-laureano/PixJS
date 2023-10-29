@@ -39,7 +39,7 @@ export class CopyAndPastePixJS {
     this.CRC_16 = "6304";
   }
 
-  getNamePayload() {
+  private getNamePayload() {
     if (parseInt(this.COUNT_MERCHANT_NAME) <= 9) {
       return `0${this.COUNT_MERCHANT_NAME}${this.data.name}`;
     } else {
@@ -47,7 +47,7 @@ export class CopyAndPastePixJS {
     }
   }
 
-  getCityPayload() {
+  private getCityPayload() {
     if (parseInt(this.COUNT_MERCHANT_CITY) <= 9) {
       return `0${this.COUNT_MERCHANT_CITY}${this.data.city}`;
     } else {
@@ -55,7 +55,7 @@ export class CopyAndPastePixJS {
     }
   }
 
-  getAdditionDataFieldTemplate() {
+  private getAdditionDataFieldTemplate() {
     const addtionalDataFieldFormat = `050${this.COUNT_ID.toString()}${
       this.data.id
     }`;
@@ -68,7 +68,7 @@ export class CopyAndPastePixJS {
     }
   }
 
-  getMerchantAmountPayload() {
+  private getMerchantAmountPayload() {
     if (parseInt(this.COUNT_TRANSACTION_AMOUNT) <= 9) {
       return `0${this.COUNT_TRANSACTION_AMOUNT}${this.data.amount.toFixed(2)}`;
     } else {
@@ -92,7 +92,7 @@ export class CopyAndPastePixJS {
     return result.toString(16).toUpperCase();
   }
 
-  generatePayload() {
+  public generatePayload() {
     const payload = `${this.PAYLOAD_FORMAT}${this.MERCHANT_ACCOUNT}${
       this.MERCHANT_CATEGORY_CODE
     }${this.TRANSACTION_CURRENCY}${

@@ -1,7 +1,8 @@
 import { PixJSProps } from "./types";
-import calcCRC16CCITT from "./utils/calcCRC16CCITT";
 
 import { Validators } from "./validators";
+
+import calcCRC16CCITT from "./utils/calcCRC16CCITT";
 
 export class CopyAndPastePixJS {
   private COUNT_MERCHANT_NAME: string;
@@ -23,6 +24,9 @@ export class CopyAndPastePixJS {
   private CRC_16: string;
 
   constructor(private readonly data: PixJSProps) {
+    this.verifyFieldsAreCorrect();
+    this.verifyKeyType();
+
     this.COUNT_MERCHANT_NAME = data.name.length.toString();
     this.COUNT_MERCHANT_CITY = data.city.length.toString();
     this.COUNT_TRANSACTION_AMOUNT = data.amount.toFixed(2).length.toString();
@@ -40,6 +44,28 @@ export class CopyAndPastePixJS {
     this.MERCHANT_CITY = "60";
     this.ADDITIONAL_DATA_FIELD = "62";
     this.CRC_16 = "6304";
+  }
+
+  private verifyKeyType() {
+    if (!this.data.key) {
+      throw new Error("The key is required");
+    } else {
+      const key = this.data.key;
+      // Verifica se o tipo da chave é email, cpf ou cnpj ou telefone
+      if (Validators.isPhone(key).isValid) {
+        this.data.key = Validators.isPhone(key).value!;
+      } else if (Validators.isEmail(key).isValid) {
+        this.data.key = Validators.isEmail(key).value!;
+      } else if (Validators.isCPF(key).isValid) {
+        this.data.key = Validators.isCPF(key).value!;
+      } else if (Validators.isCNPJ(key).isValid) {
+        this.data.key = Validators.isCNPJ(key).value!;
+      } else if (Validators.isRandomKey(key).isValid) {
+        this.data.key = Validators.isRandomKey(key).value!;
+      } else {
+        throw new Error("The key type is not valid");
+      }
+    }
   }
 
   private getNamePayload() {
@@ -109,8 +135,6 @@ export class CopyAndPastePixJS {
   }
 
   private generatePayload() {
-    this.verifyFieldsAreCorrect();
-
     const payload = (
       this.PAYLOAD +
       this.MERCHANT_ACCOUNT +

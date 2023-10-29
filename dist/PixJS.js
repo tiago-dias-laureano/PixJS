@@ -4,11 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CopyAndPastePixJS = void 0;
-const calcCRC16CCITT_1 = __importDefault(require("./utils/calcCRC16CCITT"));
 const validators_1 = require("./validators");
+const calcCRC16CCITT_1 = __importDefault(require("./utils/calcCRC16CCITT"));
 class CopyAndPastePixJS {
     constructor(data) {
         this.data = data;
+        this.verifyFieldsAreCorrect();
+        this.verifyKeyType();
         this.COUNT_MERCHANT_NAME = data.name.length.toString();
         this.COUNT_MERCHANT_CITY = data.city.length.toString();
         this.COUNT_TRANSACTION_AMOUNT = data.amount.toFixed(2).length.toString();
@@ -25,6 +27,33 @@ class CopyAndPastePixJS {
         this.MERCHANT_CITY = "60";
         this.ADDITIONAL_DATA_FIELD = "62";
         this.CRC_16 = "6304";
+    }
+    verifyKeyType() {
+        if (!this.data.key) {
+            throw new Error("The key is required");
+        }
+        else {
+            const key = this.data.key;
+            // Verifica se o tipo da chave é email, cpf ou cnpj ou telefone
+            if (validators_1.Validators.isPhone(key).isValid) {
+                this.data.key = validators_1.Validators.isPhone(key).value;
+            }
+            else if (validators_1.Validators.isEmail(key).isValid) {
+                this.data.key = validators_1.Validators.isEmail(key).value;
+            }
+            else if (validators_1.Validators.isCPF(key).isValid) {
+                this.data.key = validators_1.Validators.isCPF(key).value;
+            }
+            else if (validators_1.Validators.isCNPJ(key).isValid) {
+                this.data.key = validators_1.Validators.isCNPJ(key).value;
+            }
+            else if (validators_1.Validators.isRandomKey(key).isValid) {
+                this.data.key = validators_1.Validators.isRandomKey(key).value;
+            }
+            else {
+                throw new Error("The key type is not valid");
+            }
+        }
     }
     getNamePayload() {
         if (parseInt(this.COUNT_MERCHANT_NAME) <= 9) {
@@ -83,7 +112,6 @@ class CopyAndPastePixJS {
         return this.ADDITIONAL_DATA_FIELD + this.getAdditionDataFieldTemplate();
     }
     generatePayload() {
-        this.verifyFieldsAreCorrect();
         const payload = (this.PAYLOAD +
             this.MERCHANT_ACCOUNT +
             this.MERCHANT_CATEGORY +

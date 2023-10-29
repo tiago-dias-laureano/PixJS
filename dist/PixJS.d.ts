@@ -18,6 +18,7 @@ export declare class CopyAndPastePixJS {
     private ADDITIONAL_DATA_FIELD;
     private CRC_16;
     constructor(data: PixJSProps);
+    private verifyKeyType;
     private getNamePayload;
     private getCityPayload;
     private getAdditionDataFieldTemplate;

@@ -1,0 +1,17 @@
+{
+  "name": "pixjs",
+  "version": "1.0.0",
+  "description": "Create PIX 'copy and paste' for your projects",
+  "main": "./dist/index.js",
+  "scripts": {
+    "dev": "nodemon ./src/index.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^20.8.9",
+    "typescript": "^5.2.2"
+  }
+}

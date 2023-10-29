@@ -7,10 +7,10 @@ export declare class CopyAndPastePixJS {
     private COUNT_KEY;
     private COUNT_MERCHANT_ACCOUNT;
     private COUNT_ID;
-    private PAYLOAD_FORMAT;
+    private PAYLOAD;
     private MERCHANT_ACCOUNT;
-    private MERCHANT_CATEGORY_CODE;
-    private TRANSACTION_CURRENCY;
+    private MERCHANT_CATEGORY;
+    private CURRENCY;
     private COUNTRY_CODE;
     private TRANSACTION_AMOUNT;
     private MERCHANT_NAME;
@@ -22,6 +22,12 @@ export declare class CopyAndPastePixJS {
     private getCityPayload;
     private getAdditionDataFieldTemplate;
     private getMerchantAmountPayload;
-    private calcCRC16CCITT;
-    generatePayload(): string;
+    private verifyFieldIsRequired;
+    private verifyFieldsAreCorrect;
+    getTransactionAmount(): string;
+    getMerchantName(): string;
+    getMerchantCity(): string;
+    getAdditionDataField(): string;
+    private generatePayload;
+    generate(): string;
 }

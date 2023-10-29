@@ -1,4 +1,7 @@
 import { PixJSProps } from "./types";
+import calcCRC16CCITT from "./utils/calcCRC16CCITT";
+
+import { Validators } from "./validators";
 
 export class CopyAndPastePixJS {
   private COUNT_MERCHANT_NAME: string;
@@ -8,10 +11,10 @@ export class CopyAndPastePixJS {
   private COUNT_MERCHANT_ACCOUNT: string;
   private COUNT_ID: string;
 
-  private PAYLOAD_FORMAT: string;
+  private PAYLOAD: string;
   private MERCHANT_ACCOUNT: string;
-  private MERCHANT_CATEGORY_CODE: string;
-  private TRANSACTION_CURRENCY: string;
+  private MERCHANT_CATEGORY: string;
+  private CURRENCY: string;
   private COUNTRY_CODE: string;
   private TRANSACTION_AMOUNT: string;
   private MERCHANT_NAME: string;
@@ -27,10 +30,10 @@ export class CopyAndPastePixJS {
     this.COUNT_MERCHANT_ACCOUNT = `0014BR.GOV.BCB.PIX01${this.COUNT_KEY}${data.key}`;
     this.COUNT_ID = data.id.length.toString();
 
-    this.PAYLOAD_FORMAT = "000201";
+    this.PAYLOAD = "000201";
     this.MERCHANT_ACCOUNT = `26${this.COUNT_MERCHANT_ACCOUNT.length}${this.COUNT_MERCHANT_ACCOUNT}`;
-    this.MERCHANT_CATEGORY_CODE = "52040000";
-    this.TRANSACTION_CURRENCY = "5303986";
+    this.MERCHANT_CATEGORY = "52040000";
+    this.CURRENCY = "5303986";
     this.COUNTRY_CODE = "5802BR";
     this.TRANSACTION_AMOUNT = "54";
     this.MERCHANT_NAME = "59";
@@ -76,33 +79,55 @@ export class CopyAndPastePixJS {
     }
   }
 
-  private calcCRC16CCITT(subject: string): string {
-    let result = 0xffff;
-
-    if (subject.length > 0) {
-      for (let offset = 0; offset < subject.length; offset++) {
-        result ^= subject.charCodeAt(offset) << 8;
-        for (let bitwise = 0; bitwise < 8; bitwise++) {
-          if ((result <<= 1) & 0x10000) result ^= 0x1021;
-          result &= 0xffff;
-        }
-      }
+  private verifyFieldIsRequired(value: string, fieldName: string) {
+    if (!Validators.required(value)) {
+      throw new Error(`The value '${fieldName}' is required`);
     }
-
-    return result.toString(16).toUpperCase();
   }
 
-  public generatePayload() {
-    const payload = `${this.PAYLOAD_FORMAT}${this.MERCHANT_ACCOUNT}${
-      this.MERCHANT_CATEGORY_CODE
-    }${this.TRANSACTION_CURRENCY}${
-      this.TRANSACTION_AMOUNT + this.getMerchantAmountPayload()
-    }${this.COUNTRY_CODE}${this.MERCHANT_NAME + this.getNamePayload()}${
-      this.MERCHANT_CITY + this.getCityPayload()
-    }${this.ADDITIONAL_DATA_FIELD + this.getAdditionDataFieldTemplate()}${
-      this.CRC_16
-    }`;
+  private verifyFieldsAreCorrect() {
+    this.verifyFieldIsRequired(this.data.name, "name");
+    this.verifyFieldIsRequired(this.data.city, "city");
+    this.verifyFieldIsRequired(this.data.key, "key");
+    this.verifyFieldIsRequired(this.data.id, "id");
+  }
 
-    return `${payload}${this.calcCRC16CCITT(payload)}`;
+  getTransactionAmount() {
+    return this.TRANSACTION_AMOUNT + this.getMerchantAmountPayload();
+  }
+
+  getMerchantName() {
+    return this.MERCHANT_NAME + this.getNamePayload();
+  }
+
+  getMerchantCity() {
+    return this.MERCHANT_CITY + this.getCityPayload();
+  }
+
+  getAdditionDataField() {
+    return this.ADDITIONAL_DATA_FIELD + this.getAdditionDataFieldTemplate();
+  }
+
+  private generatePayload() {
+    this.verifyFieldsAreCorrect();
+
+    const payload = (
+      this.PAYLOAD +
+      this.MERCHANT_ACCOUNT +
+      this.MERCHANT_CATEGORY +
+      this.CURRENCY +
+      this.getTransactionAmount() +
+      this.COUNTRY_CODE +
+      this.getMerchantName() +
+      this.getMerchantCity() +
+      this.getAdditionDataField() +
+      this.CRC_16
+    ).toString();
+
+    return `${payload}${calcCRC16CCITT(payload)}`;
+  }
+
+  public generate(): string {
+    return this.generatePayload();
   }
 }

@@ -1,5 +1,4 @@
 import { PixJSProps, PixJSPropsImage } from "./types";
-
 import { Validators } from "./validators";
 import QRcode from "qrcode";
 
@@ -78,6 +77,10 @@ export class CopyAndPastePixJS {
   }
 
   private getNamePayload() {
+    if (this.data.name.length > 25) {
+      throw new Error("The name field is invalid, need a max lenght of 25");
+    }
+
     if (parseInt(this.COUNT_MERCHANT_NAME) <= 9) {
       return `0${this.COUNT_MERCHANT_NAME}${this.data.name}`;
     } else {
@@ -86,6 +89,10 @@ export class CopyAndPastePixJS {
   }
 
   private getCityPayload() {
+    if (this.data.name.length > 25) {
+      throw new Error("The name field is invalid, need a max lenght of 25");
+    }
+
     if (parseInt(this.COUNT_MERCHANT_CITY) <= 9) {
       return `0${this.COUNT_MERCHANT_CITY}${this.data.city}`;
     } else {
@@ -146,6 +153,9 @@ export class CopyAndPastePixJS {
   }
 
   getTransactionAmount() {
+    if (this.data.amount < 0.0) {
+      throw new Error("The amount field is invalid, need a value >= 0");
+    }
     return this.TRANSACTION_AMOUNT + this.getMerchantAmountPayload();
   }
 

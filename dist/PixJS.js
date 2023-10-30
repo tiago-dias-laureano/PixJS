@@ -55,6 +55,9 @@ class CopyAndPastePixJS {
         }
     }
     getNamePayload() {
+        if (this.data.name.length > 25) {
+            throw new Error("The name field is invalid, need a max lenght of 25");
+        }
         if (parseInt(this.COUNT_MERCHANT_NAME) <= 9) {
             return `0${this.COUNT_MERCHANT_NAME}${this.data.name}`;
         }
@@ -63,6 +66,9 @@ class CopyAndPastePixJS {
         }
     }
     getCityPayload() {
+        if (this.data.name.length > 25) {
+            throw new Error("The name field is invalid, need a max lenght of 25");
+        }
         if (parseInt(this.COUNT_MERCHANT_CITY) <= 9) {
             return `0${this.COUNT_MERCHANT_CITY}${this.data.city}`;
         }
@@ -104,6 +110,9 @@ class CopyAndPastePixJS {
         this.verifyFieldIsRequired(this.data.type, "type");
     }
     getTransactionAmount() {
+        if (this.data.amount < 0.0) {
+            throw new Error("The amount field is invalid, need a value >= 0");
+        }
         return this.TRANSACTION_AMOUNT + this.getMerchantAmountPayload();
     }
     getMerchantName() {

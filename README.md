@@ -29,7 +29,7 @@ const copyAndPaste = CopyAndPaste({
 - Generate QRCode Image Method
 
 ```javascript
-const { QrCodeImage } = require("./dist");
+const { QrCodeImage } = require("pixjs");
 
 const pix = QrCodeImage({
   name: "", // Receptor name
@@ -45,7 +45,7 @@ const pix = QrCodeImage({
 - Generate QRCode image in Terminal
 
 ```javascript
-const { QrCodeTerminal } = require("./dist");
+const { QrCodeTerminal } = require("pixjs");
 
 const pix = QrCodeTerminal({
   name: "", // Receptor name
@@ -67,7 +67,11 @@ const pix = QrCodeTerminal({
 
 ## 🧑 Autores
 
-- [@octokatherine](https://www.github.com/tiago-dias-laureano)
+Tiago Dias Laureano
+
+- [GITHUB](https://www.github.com/tiago-dias-laureano)
+- [INSTAGRAM](htts://instagram.com/tiagodiastl)
+- [LINKEDIN](https://www.linkedin.com/in/tiago-dias-laureano/)
 
 ## 🔍 Referência
 

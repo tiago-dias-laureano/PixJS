@@ -1,6 +1,7 @@
 import { PixJSProps, PixJSPropsImage } from "./types";
 import { Validators } from "./validators";
 import QRcode from "qrcode";
+import fs from "fs";
 
 import calcCRC16CCITT from "./utils/calcCRC16CCITT";
 
@@ -30,12 +31,14 @@ export class CopyAndPastePixJS {
     this.verifyFieldsAreCorrect();
     this.verifyKeyType();
 
-    this.COUNT_MERCHANT_NAME = data.name.length.toString();
-    this.COUNT_MERCHANT_CITY = data.city.length.toString();
-    this.COUNT_TRANSACTION_AMOUNT = data.amount.toFixed(2).length.toString();
-    this.COUNT_KEY = data.key.length.toString();
-    this.COUNT_MERCHANT_ACCOUNT = `0014BR.GOV.BCB.PIX01${this.COUNT_KEY}${data.key}`;
-    this.COUNT_ID = data.id.replace(/\s+/g, "").length.toString();
+    this.COUNT_MERCHANT_NAME = this.data.name.length.toString();
+    this.COUNT_MERCHANT_CITY = this.data.city.length.toString();
+    this.COUNT_TRANSACTION_AMOUNT = this.data.amount
+      .toFixed(2)
+      .length.toString();
+    this.COUNT_KEY = this.data.key.length.toString();
+    this.COUNT_MERCHANT_ACCOUNT = `0014BR.GOV.BCB.PIX01${this.COUNT_KEY}${this.data.key}`;
+    this.COUNT_ID = this.data.id.replace(/\s+/g, "").length.toString();
 
     this.PAYLOAD = "000201";
     this.MERCHANT_ACCOUNT = `26${this.COUNT_MERCHANT_ACCOUNT.length}${this.COUNT_MERCHANT_ACCOUNT}`;
@@ -49,9 +52,15 @@ export class CopyAndPastePixJS {
     this.CRC_16 = "6304";
 
     this.URL_QR_CODE = "";
-    this.QR_CODE_SAVE_PATH = (data as PixJSPropsImage).path || null;
+    this.QR_CODE_SAVE_PATH = (this.data as PixJSPropsImage).path || null;
   }
 
+  private formatText(text: string) {
+    return text
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-zA-Z ]/g, "");
+  }
   private verifyKeyType() {
     if (!this.data.type) throw new Error("The key type is required");
 
@@ -89,7 +98,7 @@ export class CopyAndPastePixJS {
   }
 
   private getCityPayload() {
-    if (this.data.name.length > 25) {
+    if (this.data.city.length > 25) {
       throw new Error("The name field is invalid, need a max lenght of 25");
     }
 
@@ -142,6 +151,9 @@ export class CopyAndPastePixJS {
         `The value '${fieldName}' is invalid, need a min lenght of ${minLenght}`
       );
     }
+
+    if (fieldName === "name") this.data.name = this.formatText(this.data.name);
+    if (fieldName === "city") this.data.city = this.formatText(this.data.city);
   }
 
   private verifyFieldsAreCorrect() {
@@ -208,6 +220,10 @@ export class CopyAndPastePixJS {
   }
 
   public generateQRCodeImage(): void {
+    if (!fs.existsSync(this.QR_CODE_SAVE_PATH as string)) {
+      fs.mkdirSync(this.QR_CODE_SAVE_PATH as string);
+    }
+
     QRcode.toFile(
       `${
         this.QR_CODE_SAVE_PATH

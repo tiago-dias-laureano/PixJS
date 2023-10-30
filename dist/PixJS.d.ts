@@ -1,4 +1,4 @@
-import { PixJSProps } from "./types";
+import { PixJSProps, PixJSPropsImage } from "./types";
 export declare class CopyAndPastePixJS {
     private readonly data;
     private COUNT_MERCHANT_NAME;
@@ -18,7 +18,8 @@ export declare class CopyAndPastePixJS {
     private ADDITIONAL_DATA_FIELD;
     private CRC_16;
     private URL_QR_CODE;
-    constructor(data: PixJSProps);
+    private QR_CODE_SAVE_PATH;
+    constructor(data: PixJSProps | PixJSPropsImage);
     private verifyKeyType;
     private getNamePayload;
     private getCityPayload;

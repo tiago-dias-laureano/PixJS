@@ -29,6 +29,7 @@ class CopyAndPastePixJS {
         this.ADDITIONAL_DATA_FIELD = "62";
         this.CRC_16 = "6304";
         this.URL_QR_CODE = "";
+        this.QR_CODE_SAVE_PATH = data.path || null;
     }
     verifyKeyType() {
         if (!this.data.type)
@@ -140,8 +141,14 @@ class CopyAndPastePixJS {
         return this.URL_QR_CODE;
     }
     generateQRCodeImage() {
-        qrcode_1.default.toFile(`${this.data.key}.png`, this.generatePayload(), {}, (err) => {
-            console.log(`Your QRCode Image was been generated: ${this.data.key}.png`);
+        qrcode_1.default.toFile(`${this.QR_CODE_SAVE_PATH
+            ? this.QR_CODE_SAVE_PATH + this.data.key
+            : this.data.key}.png`, this.generatePayload(), {}, (err) => {
+            if (err)
+                throw new Error(err.message);
+            console.log(`Your QRCode Image was been generated: ${this.QR_CODE_SAVE_PATH
+                ? this.QR_CODE_SAVE_PATH + this.data.key
+                : this.data.key}.png`);
         });
     }
 }

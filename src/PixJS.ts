@@ -1,4 +1,4 @@
-import { PixJSProps } from "./types";
+import { PixJSProps, PixJSPropsImage } from "./types";
 
 import { Validators } from "./validators";
 import QRcode from "qrcode";
@@ -25,8 +25,9 @@ export class CopyAndPastePixJS {
   private CRC_16: string;
 
   private URL_QR_CODE: string;
+  private QR_CODE_SAVE_PATH: string | null;
 
-  constructor(private readonly data: PixJSProps) {
+  constructor(private readonly data: PixJSProps | PixJSPropsImage) {
     this.verifyFieldsAreCorrect();
     this.verifyKeyType();
 
@@ -49,6 +50,7 @@ export class CopyAndPastePixJS {
     this.CRC_16 = "6304";
 
     this.URL_QR_CODE = "";
+    this.QR_CODE_SAVE_PATH = (data as PixJSPropsImage).path || null;
   }
 
   private verifyKeyType() {
@@ -196,8 +198,24 @@ export class CopyAndPastePixJS {
   }
 
   public generateQRCodeImage(): void {
-    QRcode.toFile(`${this.data.key}.png`, this.generatePayload(), {}, (err) => {
-      console.log(`Your QRCode Image was been generated: ${this.data.key}.png`);
-    });
+    QRcode.toFile(
+      `${
+        this.QR_CODE_SAVE_PATH
+          ? this.QR_CODE_SAVE_PATH + this.data.key
+          : this.data.key
+      }.png`,
+      this.generatePayload(),
+      {},
+      (err) => {
+        if (err) throw new Error(err.message);
+        console.log(
+          `Your QRCode Image was been generated: ${
+            this.QR_CODE_SAVE_PATH
+              ? this.QR_CODE_SAVE_PATH + this.data.key
+              : this.data.key
+          }.png`
+        );
+      }
+    );
   }
 }

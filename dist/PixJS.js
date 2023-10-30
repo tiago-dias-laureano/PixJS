@@ -29,30 +29,26 @@ class CopyAndPastePixJS {
         this.CRC_16 = "6304";
     }
     verifyKeyType() {
-        if (!this.data.key) {
-            throw new Error("The key is required");
-        }
-        else {
-            const key = this.data.key;
-            // Verifica se o tipo da chave é email, cpf ou cnpj ou telefone
-            if (validators_1.Validators.isPhone(key).isValid) {
-                this.data.key = validators_1.Validators.isPhone(key).value;
-            }
-            else if (validators_1.Validators.isEmail(key).isValid) {
-                this.data.key = validators_1.Validators.isEmail(key).value;
-            }
-            else if (validators_1.Validators.isCPF(key).isValid) {
-                this.data.key = validators_1.Validators.isCPF(key).value;
-            }
-            else if (validators_1.Validators.isCNPJ(key).isValid) {
-                this.data.key = validators_1.Validators.isCNPJ(key).value;
-            }
-            else if (validators_1.Validators.isRandomKey(key).isValid) {
-                this.data.key = validators_1.Validators.isRandomKey(key).value;
-            }
-            else {
-                throw new Error("The key type is not valid");
-            }
+        if (!this.data.type)
+            throw new Error("The key type is required");
+        switch (this.data.type) {
+            case "cpf":
+                this.data.key = validators_1.Validators.isCPF(this.data.key);
+                break;
+            case "cnpj":
+                this.data.key = validators_1.Validators.isCNPJ(this.data.key);
+                break;
+            case "phone":
+                this.data.key = validators_1.Validators.isPhone(this.data.key);
+                break;
+            case "random":
+                this.data.key = validators_1.Validators.isRandomKey(this.data.key);
+                break;
+            case "email":
+                this.data.key = validators_1.Validators.isEmail(this.data.key);
+                break;
+            default:
+                throw new Error("The key type is invalid");
         }
     }
     getNamePayload() {
@@ -98,6 +94,7 @@ class CopyAndPastePixJS {
         this.verifyFieldIsRequired(this.data.city, "city");
         this.verifyFieldIsRequired(this.data.key, "key");
         this.verifyFieldIsRequired(this.data.id, "id");
+        this.verifyFieldIsRequired(this.data.type, "type");
     }
     getTransactionAmount() {
         return this.TRANSACTION_AMOUNT + this.getMerchantAmountPayload();

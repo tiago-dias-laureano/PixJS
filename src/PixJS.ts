@@ -47,24 +47,26 @@ export class CopyAndPastePixJS {
   }
 
   private verifyKeyType() {
-    if (!this.data.key) {
-      throw new Error("The key is required");
-    } else {
-      const key = this.data.key;
-      // Verifica se o tipo da chave é email, cpf ou cnpj ou telefone
-      if (Validators.isPhone(key).isValid) {
-        this.data.key = Validators.isPhone(key).value!;
-      } else if (Validators.isEmail(key).isValid) {
-        this.data.key = Validators.isEmail(key).value!;
-      } else if (Validators.isCPF(key).isValid) {
-        this.data.key = Validators.isCPF(key).value!;
-      } else if (Validators.isCNPJ(key).isValid) {
-        this.data.key = Validators.isCNPJ(key).value!;
-      } else if (Validators.isRandomKey(key).isValid) {
-        this.data.key = Validators.isRandomKey(key).value!;
-      } else {
-        throw new Error("The key type is not valid");
-      }
+    if (!this.data.type) throw new Error("The key type is required");
+
+    switch (this.data.type) {
+      case "cpf":
+        this.data.key = Validators.isCPF(this.data.key);
+        break;
+      case "cnpj":
+        this.data.key = Validators.isCNPJ(this.data.key);
+        break;
+      case "phone":
+        this.data.key = Validators.isPhone(this.data.key);
+        break;
+      case "random":
+        this.data.key = Validators.isRandomKey(this.data.key);
+        break;
+      case "email":
+        this.data.key = Validators.isEmail(this.data.key);
+        break;
+      default:
+        throw new Error("The key type is invalid");
     }
   }
 
@@ -116,6 +118,7 @@ export class CopyAndPastePixJS {
     this.verifyFieldIsRequired(this.data.city, "city");
     this.verifyFieldIsRequired(this.data.key, "key");
     this.verifyFieldIsRequired(this.data.id, "id");
+    this.verifyFieldIsRequired(this.data.type, "type");
   }
 
   getTransactionAmount() {

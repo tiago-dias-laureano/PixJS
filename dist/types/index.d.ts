@@ -4,4 +4,5 @@ export type PixJSProps = {
     amount: number;
     city: string;
     id: string;
+    type: "cpf" | "cnpj" | "phone" | "random" | "email";
 };

@@ -3,76 +3,55 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Validators = void 0;
 class Validators {
     static required(value) {
-        return value !== "" && value !== undefined && value !== null;
+        return value !== null && value !== undefined && value !== "";
     }
     static isEmail(email) {
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        return {
-            isValid: emailRegex.test(email),
-            value: email,
-        };
+        if (!this.EMAIL_REGEX.test(email)) {
+            throw new Error("Invalid email address");
+        }
+        return email;
     }
     static isCPF(cpf) {
-        const phoneRegex = /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
-        const cpfRegex = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/;
-        if ((cpfRegex.test(cpf) && phoneRegex.test(cpf) === false) ||
-            (cpf.length == 11 && phoneRegex.test(cpf) === false)) {
-            return {
-                isValid: true,
-                value: cpf.replace(".", "").replace(".", "").replace("-", ""),
-            };
+        if (cpf.length !== this.CPF_LENGTH_WITH_MASK &&
+            cpf.length !== this.CPF_LENGTH) {
+            throw new Error("Invalid CPF");
         }
-        else {
-            return {
-                isValid: false,
-            };
-        }
+        return cpf.replace(/\D/g, "");
     }
     static isCNPJ(cnpj) {
-        const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/;
-        if (cnpjRegex.test(cnpj) || cnpj.length == 14) {
-            return {
-                isValid: true,
-                value: cnpj
-                    .replace(".", "")
-                    .replace(".", "")
-                    .replace("-", "")
-                    .replace("/", ""),
-            };
+        if (cnpj.length !== this.CNPJ_LENGTH_WITH_MASK &&
+            cnpj.length !== this.CNPJ_LENGTH) {
+            throw new Error("Invalid CNPJ");
         }
-        else {
-            return {
-                isValid: false,
-            };
-        }
+        return cnpj.replace(/\D/g, "");
     }
     static isPhone(phone) {
-        const phoneRegex = /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
-        if (phoneRegex.test(phone) || phone.length == 11) {
-            return {
-                isValid: true,
-                value: phone.replace(/\D/g, ""),
-            };
+        let cleanedPhone = phone.replace(/\D/g, "");
+        if (cleanedPhone.length !== this.VALID_PHONE_LENGTH &&
+            cleanedPhone.length !== this.VALID_PHONE_WITH_COUNTRY_CODE_LENGTH) {
+            throw new Error("Invalid phone number");
+        }
+        if (cleanedPhone.startsWith("55")) {
+            cleanedPhone = `+${cleanedPhone}`;
         }
         else {
-            return {
-                isValid: false,
-            };
+            cleanedPhone = `+55${cleanedPhone}`;
         }
+        return cleanedPhone;
     }
     static isRandomKey(key) {
-        const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-        if (uuidRegex.test(key)) {
-            return {
-                isValid: true,
-                value: key,
-            };
+        if (key.length !== this.RANDOM_KEY_LENGTH) {
+            throw new Error("Invalid key");
         }
-        else {
-            return {
-                isValid: false,
-            };
-        }
+        return key;
     }
 }
 exports.Validators = Validators;
+Validators.CPF_LENGTH = 11;
+Validators.CPF_LENGTH_WITH_MASK = 14;
+Validators.CNPJ_LENGTH = 14;
+Validators.CNPJ_LENGTH_WITH_MASK = 18;
+Validators.VALID_PHONE_LENGTH = 11;
+Validators.VALID_PHONE_WITH_COUNTRY_CODE_LENGTH = 13;
+Validators.RANDOM_KEY_LENGTH = 36;
+Validators.EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

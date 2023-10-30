@@ -17,6 +17,7 @@ export declare class CopyAndPastePixJS {
     private MERCHANT_CITY;
     private ADDITIONAL_DATA_FIELD;
     private CRC_16;
+    private URL_QR_CODE;
     constructor(data: PixJSProps);
     private verifyKeyType;
     private getNamePayload;
@@ -31,4 +32,6 @@ export declare class CopyAndPastePixJS {
     getAdditionDataField(): string;
     private generatePayload;
     generate(): string;
+    generateQRCodeTerminal(): string;
+    generateQRCodeImage(): void;
 }

@@ -1,6 +1,7 @@
 import { PixJSProps } from "./types";
 
 import { Validators } from "./validators";
+import QRcode from "qrcode";
 
 import calcCRC16CCITT from "./utils/calcCRC16CCITT";
 
@@ -23,6 +24,8 @@ export class CopyAndPastePixJS {
   private ADDITIONAL_DATA_FIELD: string;
   private CRC_16: string;
 
+  private URL_QR_CODE: string;
+
   constructor(private readonly data: PixJSProps) {
     this.verifyFieldsAreCorrect();
     this.verifyKeyType();
@@ -32,7 +35,7 @@ export class CopyAndPastePixJS {
     this.COUNT_TRANSACTION_AMOUNT = data.amount.toFixed(2).length.toString();
     this.COUNT_KEY = data.key.length.toString();
     this.COUNT_MERCHANT_ACCOUNT = `0014BR.GOV.BCB.PIX01${this.COUNT_KEY}${data.key}`;
-    this.COUNT_ID = data.id.length.toString();
+    this.COUNT_ID = data.id.replace(/\s+/g, "").length.toString();
 
     this.PAYLOAD = "000201";
     this.MERCHANT_ACCOUNT = `26${this.COUNT_MERCHANT_ACCOUNT.length}${this.COUNT_MERCHANT_ACCOUNT}`;
@@ -44,6 +47,8 @@ export class CopyAndPastePixJS {
     this.MERCHANT_CITY = "60";
     this.ADDITIONAL_DATA_FIELD = "62";
     this.CRC_16 = "6304";
+
+    this.URL_QR_CODE = "";
   }
 
   private verifyKeyType() {
@@ -87,15 +92,22 @@ export class CopyAndPastePixJS {
   }
 
   private getAdditionDataFieldTemplate() {
-    const addtionalDataFieldFormat = `050${this.COUNT_ID.toString()}${
-      this.data.id
-    }`;
     if (parseInt(this.COUNT_ID) <= 9) {
-      return `${addtionalDataFieldFormat.length}050${this.COUNT_ID.toString()}${
-        this.data.id
-      }`;
+      const addtionalDataFieldFormat = `050${this.COUNT_ID.toString()}${this.data.id.replace(
+        /\s+/g,
+        ""
+      )}`;
+      return `${
+        addtionalDataFieldFormat.length
+      }050${this.COUNT_ID.toString()}${this.data.id.replace(/\s+/g, "")}`;
     } else {
-      return `${addtionalDataFieldFormat.length}05${this.COUNT_ID}${this.data.id}`;
+      const addtionalDataFieldFormat = `05${this.COUNT_ID.toString()}${this.data.id.replace(
+        /\s+/g,
+        ""
+      )}`;
+      return `${addtionalDataFieldFormat.length}05${
+        this.COUNT_ID
+      }${this.data.id.replace(/\s+/g, "")}`;
     }
   }
 
@@ -107,9 +119,19 @@ export class CopyAndPastePixJS {
     }
   }
 
-  private verifyFieldIsRequired(value: string, fieldName: string) {
+  private verifyFieldIsRequired(
+    value: string,
+    fieldName: string,
+    minLenght?: number
+  ) {
     if (!Validators.required(value)) {
       throw new Error(`The value '${fieldName}' is required`);
+    }
+
+    if (minLenght && value.length < minLenght) {
+      throw new Error(
+        `The value '${fieldName}' is invalid, need a min lenght of ${minLenght}`
+      );
     }
   }
 
@@ -117,7 +139,7 @@ export class CopyAndPastePixJS {
     this.verifyFieldIsRequired(this.data.name, "name");
     this.verifyFieldIsRequired(this.data.city, "city");
     this.verifyFieldIsRequired(this.data.key, "key");
-    this.verifyFieldIsRequired(this.data.id, "id");
+    this.verifyFieldIsRequired(this.data.id, "id", 6);
     this.verifyFieldIsRequired(this.data.type, "type");
   }
 
@@ -156,5 +178,26 @@ export class CopyAndPastePixJS {
 
   public generate(): string {
     return this.generatePayload();
+  }
+
+  public generateQRCodeTerminal(): string {
+    QRcode.toString(
+      this.generatePayload(),
+      { type: "terminal", small: true },
+      (err, url) => {
+        if (err) throw err;
+        this.URL_QR_CODE = url;
+      }
+    );
+
+    console.log(this.generatePayload());
+
+    return this.URL_QR_CODE;
+  }
+
+  public generateQRCodeImage(): void {
+    QRcode.toFile(`${this.data.key}.png`, this.generatePayload(), {}, (err) => {
+      console.log(`Your QRCode Image was been generated: ${this.data.key}.png`);
+    });
   }
 }

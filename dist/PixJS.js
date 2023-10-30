@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CopyAndPastePixJS = void 0;
 const validators_1 = require("./validators");
+const qrcode_1 = __importDefault(require("qrcode"));
 const calcCRC16CCITT_1 = __importDefault(require("./utils/calcCRC16CCITT"));
 class CopyAndPastePixJS {
     constructor(data) {
@@ -16,7 +17,7 @@ class CopyAndPastePixJS {
         this.COUNT_TRANSACTION_AMOUNT = data.amount.toFixed(2).length.toString();
         this.COUNT_KEY = data.key.length.toString();
         this.COUNT_MERCHANT_ACCOUNT = `0014BR.GOV.BCB.PIX01${this.COUNT_KEY}${data.key}`;
-        this.COUNT_ID = data.id.length.toString();
+        this.COUNT_ID = data.id.replace(/\s+/g, "").length.toString();
         this.PAYLOAD = "000201";
         this.MERCHANT_ACCOUNT = `26${this.COUNT_MERCHANT_ACCOUNT.length}${this.COUNT_MERCHANT_ACCOUNT}`;
         this.MERCHANT_CATEGORY = "52040000";
@@ -27,6 +28,7 @@ class CopyAndPastePixJS {
         this.MERCHANT_CITY = "60";
         this.ADDITIONAL_DATA_FIELD = "62";
         this.CRC_16 = "6304";
+        this.URL_QR_CODE = "";
     }
     verifyKeyType() {
         if (!this.data.type)
@@ -68,12 +70,13 @@ class CopyAndPastePixJS {
         }
     }
     getAdditionDataFieldTemplate() {
-        const addtionalDataFieldFormat = `050${this.COUNT_ID.toString()}${this.data.id}`;
         if (parseInt(this.COUNT_ID) <= 9) {
-            return `${addtionalDataFieldFormat.length}050${this.COUNT_ID.toString()}${this.data.id}`;
+            const addtionalDataFieldFormat = `050${this.COUNT_ID.toString()}${this.data.id.replace(/\s+/g, "")}`;
+            return `${addtionalDataFieldFormat.length}050${this.COUNT_ID.toString()}${this.data.id.replace(/\s+/g, "")}`;
         }
         else {
-            return `${addtionalDataFieldFormat.length}05${this.COUNT_ID}${this.data.id}`;
+            const addtionalDataFieldFormat = `05${this.COUNT_ID.toString()}${this.data.id.replace(/\s+/g, "")}`;
+            return `${addtionalDataFieldFormat.length}05${this.COUNT_ID}${this.data.id.replace(/\s+/g, "")}`;
         }
     }
     getMerchantAmountPayload() {
@@ -84,16 +87,19 @@ class CopyAndPastePixJS {
             return `${this.COUNT_TRANSACTION_AMOUNT}${this.data.amount.toFixed(2)}`;
         }
     }
-    verifyFieldIsRequired(value, fieldName) {
+    verifyFieldIsRequired(value, fieldName, minLenght) {
         if (!validators_1.Validators.required(value)) {
             throw new Error(`The value '${fieldName}' is required`);
+        }
+        if (minLenght && value.length < minLenght) {
+            throw new Error(`The value '${fieldName}' is invalid, need a min lenght of ${minLenght}`);
         }
     }
     verifyFieldsAreCorrect() {
         this.verifyFieldIsRequired(this.data.name, "name");
         this.verifyFieldIsRequired(this.data.city, "city");
         this.verifyFieldIsRequired(this.data.key, "key");
-        this.verifyFieldIsRequired(this.data.id, "id");
+        this.verifyFieldIsRequired(this.data.id, "id", 6);
         this.verifyFieldIsRequired(this.data.type, "type");
     }
     getTransactionAmount() {
@@ -123,6 +129,20 @@ class CopyAndPastePixJS {
     }
     generate() {
         return this.generatePayload();
+    }
+    generateQRCodeTerminal() {
+        qrcode_1.default.toString(this.generatePayload(), { type: "terminal", small: true }, (err, url) => {
+            if (err)
+                throw err;
+            this.URL_QR_CODE = url;
+        });
+        console.log(this.generatePayload());
+        return this.URL_QR_CODE;
+    }
+    generateQRCodeImage() {
+        qrcode_1.default.toFile(`${this.data.key}.png`, this.generatePayload(), {}, (err) => {
+            console.log(`Your QRCode Image was been generated: ${this.data.key}.png`);
+        });
     }
 }
 exports.CopyAndPastePixJS = CopyAndPastePixJS;

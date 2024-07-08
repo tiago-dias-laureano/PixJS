@@ -203,11 +203,21 @@ export class CopyAndPastePixJS {
     return `${payload}${calcCRC16CCITT(payload)}`;
   }
 
-  public generate(): string {
-    return this.generatePayload();
+  public generate() {
+    return {
+      message: "Your Copy and Paste has been generated",
+      payload: this.generatePayload(),
+      data: {
+        name: this.data.name,
+        key: this.data.key,
+        amount: this.data.amount,
+        city: this.data.city,
+        id: this.data.id,
+      },
+    };
   }
 
-  public generateQRCodeTerminal(): string {
+  public generateQRCodeTerminal() {
     QRcode.toString(
       this.generatePayload(),
       { type: "terminal", small: true },
@@ -217,16 +227,10 @@ export class CopyAndPastePixJS {
       }
     );
 
-    console.log(this.generatePayload());
-
-    return this.URL_QR_CODE;
+    console.log(this.URL_QR_CODE);
   }
 
-  public generateQRCodeImage(): {
-    message: string;
-    path: string;
-    payload: string;
-  } {
+  public generateQRCodeImage() {
     if (!this.QR_CODE_SAVE_PATH) {
       throw new Error('The "path" argument must be of type string');
     }
@@ -235,23 +239,24 @@ export class CopyAndPastePixJS {
       fs.mkdirSync(this.QR_CODE_SAVE_PATH as string);
     }
 
-    QRcode.toFile(
-      `${
-        this.QR_CODE_SAVE_PATH
-          ? this.QR_CODE_SAVE_PATH + this.data.key
-          : this.data.key
-      }.png`,
-      this.generatePayload(),
-      {},
-      (err) => {
-        if (err) throw new Error(err.message);
-      }
-    );
+    const filePath = `${this.QR_CODE_SAVE_PATH}${this.data.key}.png`;
+
+    QRcode.toFile(filePath, this.generatePayload(), {}, (err) => {
+      if (err) throw new Error(err.message);
+    });
 
     return {
-      message: "Your QRCode Image was been generated",
-      path: this.QR_CODE_SAVE_PATH + this.data.key,
+      message: "Your QRCode Image has been generated",
       payload: this.generatePayload(),
+      path: `${filePath}`,
+      image: `${this.data.key}.png`,
+      data: {
+        name: this.data.name,
+        key: this.data.key,
+        amount: this.data.amount,
+        city: this.data.city,
+        id: this.data.id,
+      },
     };
   }
 }

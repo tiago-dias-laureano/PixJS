@@ -1,0 +1,35 @@
+{
+  "name": "pixjs",
+  "version": "2.0.0",
+  "description": "Create Pix 'copy and paste' for your projects",
+  "main": "./dist/index.js",
+  "scripts": {
+    "dev": "nodemon ./src/index.ts",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiago-dias-laureano/PixJS.git"
+  },
+  "keywords": [
+    "pix",
+    "qrcode",
+    "pix-qrcode",
+    "pixjs",
+    "payments"
+  ],
+  "author": "Tiago Dias Laureano",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tiago-dias-laureano/PixJS/issues"
+  },
+  "homepage": "https://github.com/tiago-dias-laureano/PixJS#readme",
+  "dependencies": {
+    "qrcode": "^1.5.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/qrcode": "^1.5.5",
+    "typescript": "^5.5.3"
+  }
+}

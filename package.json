@@ -1,6 +1,6 @@
 {
   "name": "pixjs",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Create Pix 'copy and paste' for your projects",
   "main": "./dist/index.js",
   "scripts": {
